@@ -15,13 +15,17 @@ window.onload = function () {
 
 function makeTable() {
     const days = ['월', '화', '수', '목', '금'];
+    const titles = ['요일', '출근 시간', '퇴근 시간', '휴가 시간', '휴일 체크', '근무 인정 시간(최대 9시간)', '적립시간 및 총 잔여 근무시간'];
     const tableBody = document.getElementById('workHoursTable').getElementsByTagName('tbody')[0];
     days.forEach((day, index) => {
         let row = tableBody.insertRow();
         row.insertCell(0).innerText = day;
+        row.cells[0].setAttribute('data-title', titles[0]);
+        row.cells[0].classList.add('title');
         for (let i = 1; i <= 6; i++) { // 셀 추가로 인덱스 6까지 확장
-
             let cell = row.insertCell(i);
+            cell.setAttribute('data-title', titles[i]);
+            cell.classList.add('title');
             if (i < 3) { // 출근 시간과 퇴근 시간 입력란
                 let input = document.createElement('input');
                 input.type = 'text';
