@@ -214,7 +214,7 @@ function resetAll() {
         rows[i].cells[5].innerText = '00:00';
         rows[i].cells[5].style.backgroundColor = 'FFFFFF';
         rows[i].cells[5].style.color = '#666666';
-        rows[i].cells[6].children[0].value = '';
+        rows[i].cells[6].innerText = '';
     }
     rows[rows.length - 1].cells[6].innerText = '40:00';
     document.getElementById('fridayExitTime').innerText = '';
