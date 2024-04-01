@@ -5,13 +5,11 @@ body {
     min-height: 100%;
     font-family: 'Pretendard Variable', 'Apple SD Gothic Neo', sans-serif;
     font-size: 16px;
-    /* 모바일 환경을 고려해 기본 글꼴 크기 조정 */
     font-weight: 400;
     line-height: 1.5;
     color: #666666;
     text-size-adjust: 100%;
     overflow-x: hidden;
-    /* 가로 스크롤 방지 */
     text-align: center;
 }
 
@@ -19,7 +17,6 @@ table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    /* 테이블 셀의 너비가 고정되도록 설정 */
 }
 
 table,
@@ -33,7 +30,6 @@ td {
     padding: 10px;
     text-align: center;
     word-wrap: break-word;
-    /* 셀 내용이 너무 길 경우 줄바꿈 */
 }
 
 .table-title {
@@ -72,7 +68,6 @@ td {
 
 button {
     margin: 10px 5px;
-    /* 버튼 간의 간격 조정 */
     padding: 10px 20px;
     font-size: 1rem;
     cursor: pointer;
@@ -82,6 +77,7 @@ button {
     border-radius: 20px;
     transition: background-color 0.3s ease;
 }
+
 .reset-all {
     background-color: #898989;
 }
@@ -101,35 +97,11 @@ button {
 .table-container {
     width: 100%;
     overflow-x: auto;
-    /* 가로 스크롤을 가능하게 합니다. */
 }
-
-/* 모바일 환경에서의 스타일 조정 */
-@media screen and (max-width: 768px) {
-
-    html,
-    body {
-        font-size: 16px;
-        /* 모바일 화면에서 글씨 크기를 적절히 조정 */
-        margin: 0px;
-        padding: 0;
-    }
-
-    /* 테이블을 감싸는 컨테이너 추가 필요 */
-
-    table {
-        min-width: 768px;
-        /* 테이블의 최소 너비를 설정하여 가로 스크롤이 생기도록 합니다. */
-    }
-}
-
 .action-container {
     text-align: center;
-    /* 내용을 가로 중앙에 정렬 */
     margin-top: 40px;
-    /* 테이블과의 상단 간격 */
     margin-bottom: 40px;
-    /* 하단 간격 (필요에 따라 조정 가능) */
 }
 
 button:hover {
@@ -142,17 +114,17 @@ button:hover {
 
 #fridayExitTime {
     margin-top: 20px;
-    /* 결과 표시와 버튼 사이의 간격 */
     font-size: 2rem;
-    /* 결과 텍스트의 글꼴 크기 */
     font-weight: 400;
     color: #007bff;
 }
-.fridayExitTimeNormal{
+
+.fridayExitTimeNormal {
     color: #6f6f6f;
     font-weight: 200;
 }
-.fridayExitTimeAlert{
+
+.fridayExitTimeAlert {
     color: #ff0000;
     font-weight: 400;
 }
@@ -160,36 +132,24 @@ button:hover {
 .title-center {
     font-weight: 900;
     font-size: 3rem;
-    /* 결과 텍스트의 글꼴 크기 */
     text-align: center;
-    /* 텍스트 중앙 정렬 */
     margin-top: 20px;
-    /* 상단 여백 */
     margin-bottom: 20px;
-    /* 하단 여백 */
     color: #3f3f3f;
 }
 
-/* 시간 입력 */
 input[type="text"] {
     padding: 5px 5px 5px 5px;
-    /* 패딩 조정 */
     border-radius: 5px;
-    /* 모서리 둥글게 */
     border: 1px solid #d4d4d4;
-    /* 테두리 색상 */
     color: #777777;
-    /* 텍스트 색상 */
     background-color: #ffffff;
-    /* 배경 색상 */
     width: 80px;
     margin-right: 10px;
 }
 
-/* 드롭다운 (select) */
 select {
     padding: 5px 5px 5px 5px;
-    /* 모서리 둥글게 */
     border-radius: 5px;
     border: 1px solid #d4d4d4;
     color: #777777;
@@ -197,10 +157,134 @@ select {
     text-align: center;
 }
 
-/* 체크박스 */
 input[type="checkbox"] {
     transform: scale(1.4);
-    /* 체크박스 크기 조정 */
     margin-right: 5px;
     color: #777777;
+}
+
+@media screen and (max-width: 907px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+        width: 100%;
+        border: 0px;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        border: 0px;
+    }
+
+    tr {
+        border: 1px solid #ccc;
+        border-radius: 0px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: calc(100% - 2px);
+    }
+
+    td {
+        position: relative;
+        align-items: flex-start;
+        justify-content: center;
+        border: none;
+        border-bottom: 1px solid #dedede;
+        position: relative;
+        padding: 10px;
+        padding-left: calc(40% + 30px);
+        text-align: left;
+        white-space: normal;
+        height: 22px;
+        width: auto;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40%;
+        height: 22px;
+        padding: 10px;
+        content: attr(data-title);
+        font-weight: bold;
+        font-size: 14px;
+        color: #666666;
+        background-color: #f3f3f3;
+        text-align: right;
+    }
+
+    input[type="text"],
+    select {
+        width: auto;
+        max-width: 100%;
+    }
+
+    select {
+        padding: 5px 5px 5px 5px;
+        border-radius: 5px;
+        border: 1px solid #d4d4d4;
+        color: #777777;
+        background-color: #ffffff;
+        text-align: center;
+        margin: 0px;
+    }
+
+    input[type="text"] {
+        transform: scale(1);
+        margin: 0px;
+        margin-right: 5px;
+        color: #777777;
+    }
+}
+
+@media screen and (max-width: 470px) {
+    html, body {
+        margin: 10px;
+        font-size: 14px;
+    }
+
+    .action-container, .title-center, #fridayExitTime {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    td {
+        font-size: 12px;
+        padding-left: calc(40% + 30px);
+        height: 18px;
+    }
+
+    td:before {
+        width: 40%;
+        font-size: 12px;
+        height: 18px;
+    }
+
+    input[type="text"], select {
+        max-width: 60%;
+        padding: 4px;
+        font-size: 12px;
+    }
+
+    button {
+        font-size: 0.8rem;
+        font-size: 14px;
+    }
+    .item-reset {
+        padding: 0px 0px;
+        font-size: 0.8rem;
+        font-size: 12px;
+    }
+
 }
