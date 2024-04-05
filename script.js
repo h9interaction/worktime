@@ -1,3 +1,8 @@
+const color1 = '#0ACFD9';
+const color2 = '#EF6D81';
+const color3 = '#666666';
+const color4 = '#FFFFFF';
+
 window.onload = function () {
     makeTable();
 
@@ -22,14 +27,14 @@ var workTimeChart = new Chart(ctx, {
             label: '근무 시간',
             data: [0, 2400, 0], // 여기서 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
             backgroundColor: [
-                'rgba(0, 255, 0, 0.2)', // 휴일 시간 색상
-                'rgba(54, 162, 235, 0.2)', // 인정된 근무 시간 색상
-                'rgba(255, 99, 132, 0.2)' // 남은 근무 시간 색상, // 인정된 근무 시간 색상
+                'rgba(220, 188, 256, 1)', // 휴일 색상
+                'rgba(166, 232, 236, 1)', // 근무한 시간 색상
+                'rgba(236, 236, 236, 1)' // 남은 시간 색상
             ],
             borderColor: [
-                'rgba(0, 255, 0, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 99, 132, 1)'
+                'rgba(255, 255, 255, 1)',
+                'rgba(255, 255, 255, 1)',
+                'rgba(255, 255, 255, 1)'
             ],
             borderWidth: 1
         }]
@@ -43,7 +48,7 @@ var workTimeChart = new Chart(ctx, {
             },
             tooltip: { // Chart.js 3.x 이상에서는 tooltip을 사용
                 callbacks: {
-                    label: function(context) {
+                    label: function (context) {
                         let label = context.label || '';
                         if (label) {
                             label += ': ';
@@ -119,10 +124,18 @@ function makeTable() {
                 select.value = localStorage.getItem(`vacationTime${index + 1}`) || '없음';
                 cell.appendChild(select);
             } else if (i === 4) { // 휴일 체크박스
+                let label = document.createElement('label');
+                label.className = 'custom-checkbox';
+
                 let input = document.createElement('input');
                 input.type = 'checkbox';
                 input.checked = localStorage.getItem(`holiday${index + 1}`) === 'true';
-                cell.appendChild(input);
+
+                let span = document.createElement('span');
+
+                label.appendChild(input);
+                label.appendChild(span);
+                cell.appendChild(label);
             } else {
                 cell.innerText = ''; // 나머지 셀은 초기값 설정
             }
@@ -139,13 +152,13 @@ function updateWorkHours() {
     let totalDeductedMinutesForHolidays = 0;
 
     for (let i = 1; i < rows.length; i++) {
-        const isHoliday = rows[i].cells[4].children[0].checked;
+        const isHoliday = rows[i].cells[4].children[0].children[0].checked;
         if (isHoliday) {
             // 휴일인 경우 전체 근무 시간에서 하루 8시간(480분)을 빼줌
             totalDeductedMinutesForHolidays += 8 * 60;
             rows[i].cells[5].innerText = '휴일(8시간 제외)'; // 휴일인 경우 근무 시간을 '휴일'로 표시
-            rows[i].cells[5].style.color = '#007bff'
-            // rows[i].cells[5].style.backgroundColor = '#007bff';
+            rows[i].cells[5].style.color = color1
+            // rows[i].cells[5].style.backgroundColor = color1;
             continue;
         }
 
@@ -179,17 +192,17 @@ function updateWorkHours() {
         rows[i].cells[5].innerText = `${pad(hours)}:${pad(mins)}`; // 근무 인정 시간 업데이트
         if (dailyMaxWorkMinutes < 480) {
             if (dailyMaxWorkMinutes === 0) {
-                rows[i].cells[5].style.color = '#666666';
-                rows[i].cells[5].style.backgroundColor = '#FFFFFF'
+                rows[i].cells[5].style.color = color3;
+                rows[i].cells[5].style.backgroundColor = color4
             } else {
-                rows[i].cells[5].style.color = '#FF006A';
+                rows[i].cells[5].style.color = color2;
                 if (dailyMaxWorkMinutes < 0) {
                     rows[i].cells[5].innerText = `출퇴근시간 AM/PM 확인`;
                 }
             }
         } else {
-            rows[i].cells[5].style.color = '#007bff';
-            // rows[i].cells[5].style.backgroundColor = '#007bff';
+            rows[i].cells[5].style.color = color1;
+            // rows[i].cells[5].style.backgroundColor = color1;
         }
         // 적립시간 표시
         if (i < rows.length - 1 && dailyMaxWorkMinutes !== 0) {
@@ -203,14 +216,14 @@ function updateWorkHours() {
             let _mins = addedTime % 60;
             if (isMinus) {
                 rows[i].cells[6].innerText = `-${pad(_hours)}:${pad(_mins)} 부족`;
-                rows[i].cells[6].style.color = '#FF006A';
+                rows[i].cells[6].style.color = color2;
             } else {
                 if (addedTime === 0) {
-                    rows[i].cells[6].style.color = '#666666';
+                    rows[i].cells[6].style.color = color3;
                     rows[i].cells[6].innerText = '-';
                 } else {
                     rows[i].cells[6].innerText = `+${pad(_hours)}:${pad(_mins)} 적립`;
-                    rows[i].cells[6].style.color = '#007bff';
+                    rows[i].cells[6].style.color = color1;
 
                 }
             }
@@ -224,11 +237,11 @@ function updateWorkHours() {
     let remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
     rows[rows.length - 1].cells[6].innerText = formatMinutesAsHours(remainingMinutes); // 잔여 근무 시간 업데이트
     if (remainingMinutes > 0) {
-        rows[rows.length - 1].cells[6].style.backgroundColor = '#FF006A';
-        rows[rows.length - 1].cells[6].style.color = '#FFFFFF';
+        rows[rows.length - 1].cells[6].style.backgroundColor = color2;
+        rows[rows.length - 1].cells[6].style.color = color4;
     } else {
-        rows[rows.length - 1].cells[6].style.backgroundColor = '#007bff';
-        rows[rows.length - 1].cells[6].style.color = '#FFFFFF';
+        rows[rows.length - 1].cells[6].style.backgroundColor = color1;
+        rows[rows.length - 1].cells[6].style.color = color4;
     }
 
     document.getElementById('fridayExitTime').innerText = '';
@@ -254,7 +267,7 @@ function saveTimeToLocalStorage() {
         const startTime = rows[i].cells[1].children[0].value;
         const endTime = rows[i].cells[2].children[0].value;
         const vacationTime = rows[i].cells[3].children[0].value;
-        const isHoliday = rows[i].cells[4].children[0].checked;
+        const isHoliday = rows[i].cells[4].children[0].children[0].checked;
 
         localStorage.setItem(`startTime${i}`, startTime);
         localStorage.setItem(`endTime${i}`, endTime);
@@ -274,10 +287,10 @@ function resetAll() {
         rows[i].cells[1].children[0].value = '';
         rows[i].cells[2].children[0].value = '';
         rows[i].cells[3].children[0].value = '없음';
-        rows[i].cells[4].children[0].checked = false;
+        rows[i].cells[4].children[0].children[0].checked = false;
         rows[i].cells[5].innerText = '00:00';
-        rows[i].cells[5].style.backgroundColor = 'FFFFFF';
-        rows[i].cells[5].style.color = '#666666';
+        rows[i].cells[5].style.backgroundColor = color4;
+        rows[i].cells[5].style.color = color3;
         rows[i].cells[6].innerText = '';
     }
     rows[rows.length - 1].cells[6].innerText = '40:00';
@@ -296,7 +309,7 @@ function calculateFridayExitTime() { // 금요일 뿐만 아니라 퇴근시간�
         if (
             rows[i].cells[2].children[0].value === '' &&
             // rows[i].cells[3].children[0].value === '없음' &&
-            rows[i].cells[4].children[0].checked === false) {
+            rows[i].cells[4].children[0].children[0].checked === false) {
             targetRow = rows[i];
             if (i === 1) {
                 targetDayOfWeek = "월요일";
