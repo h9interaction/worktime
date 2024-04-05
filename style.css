@@ -78,6 +78,7 @@ canvas
     max-width: 300px;
     max-height: 300px;
     margin-bottom: 40px;
+    z-index: 100;
 }
 
 button {
