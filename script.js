@@ -17,7 +17,7 @@ var ctx = document.getElementById('workTimeChart').getContext('2d');
 var workTimeChart = new Chart(ctx, {
     type: 'doughnut', // 원형 그래프 유형
     data: {
-        labels: ['휴가시간', '인정된 근무 시간', '남은 근무 시간'],
+        labels: ['휴일', '근무한 시간(휴가시간 포함)', '남은 시간'],
         datasets: [{
             label: '근무 시간',
             data: [0, 2400, 0], // 여기서 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
@@ -110,7 +110,7 @@ function makeTable() {
                 cell.appendChild(resetBtn);
             } else if (i === 3) { // 휴가 시간 선택
                 let select = document.createElement('select');
-                ['없음', '2시간', '4시간', '8시간'].forEach(option => {
+                ['없음', '2시간', '4시간'].forEach(option => {
                     let optionElement = document.createElement('option');
                     optionElement.value = option;
                     optionElement.textContent = option;
