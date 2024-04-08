@@ -87,7 +87,7 @@ function makeTable() {
         row.cells[0].setAttribute('data-title', titles[0]);
         row.cells[0].classList.add('title');
         row.cells[0].style.backgroundColor = color5;
-        row.cells[0].style.fontWeight = '900';
+        row.cells[0].style.fontWeight = '700';
         row.classList.add('day-row');
         row.setAttribute('data-day', day);
         for (let i = 1; i <= 6; i++) { // 셀 추가로 인덱스 6까지 확장
@@ -300,7 +300,6 @@ function resetAll() {
         rows[i].cells[6].innerText = '';
     }
     document.getElementById('total-remainning-time').innerHTML = '<div>총 잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + color2 + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>';
-    // rows[rows.length - 1].cells[6].innerText = '40:00';
     document.getElementById('dayExitTime').innerText = '';
     updateChart(0, 2400);
 }
@@ -342,9 +341,7 @@ function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 
         alert(`${targetDayOfWeek}의 출근 시간을 입력해주세요.`);
         return;
     }
-
-    // const remainingWorkHoursText = (targetDayOfWeek === "금요일") ? rows[rows.length - 1].cells[6].innerText : rows[rows.length - 1].cells[6].innerText;//"08:00";
-    // const [remainingHours, remainingMinutes] = remainingWorkHoursText.split(':').map(Number);
+    
     let remainingTotalMinutes = remainingMinutes;// (remainingHours * 60) + remainingMinutes;
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
