@@ -68,7 +68,6 @@ var workTimeChart = new Chart(ctx, {
 });
 
 function updateChart(completedTime, remainingTime, vacationTime) {
-    // console.log('근무 완료시간: ' + completedTime + ', 남은 근무시간: ' + remainingTime + ', 휴일 시간: ' + vacationTime);
     workTimeChart.data.datasets[0].data[0] = vacationTime;
     workTimeChart.data.datasets[0].data[1] = completedTime;
     workTimeChart.data.datasets[0].data[2] = remainingTime;
@@ -103,13 +102,9 @@ function makeTable() {
 
                 if (i === 1) {
                     input.value = localStorage.getItem(`startTime${index + 1}`) || '';
-                    // input.min = '08:00'; // 오전 8시
-                    // input.max = '19:30'; // 오후 7시 30분
                 }
                 if (i === 2) {
                     input.value = localStorage.getItem(`endTime${index + 1}`) || '';
-                    // input.min = '08:00'; // 오전 8시
-                    // input.max = '19:30'; // 오후 7시 30분
                 }
                 let resetBtn = document.createElement('button');
                 resetBtn.className = 'btn item-reset';
@@ -151,7 +146,6 @@ function makeTable() {
 }
 
 function updateWorkHours() {
-    // console.log('updateWorkHours');
     const rows = document.getElementById('workHoursTable').rows;
     let totalAccumulatedMinutes = 0;
 
@@ -168,7 +162,6 @@ function updateWorkHours() {
             rows[i].cells[5].style.color = color6;
             rows[i].cells[6].innerText = '';
             rows[i].cells[0].style.color = color6;
-            // rows[i].cells[5].style.backgroundColor = color1;
             continue;
         }
 
@@ -212,7 +205,6 @@ function updateWorkHours() {
             }
         } else {
             rows[i].cells[5].style.color = color1;
-            // rows[i].cells[5].style.backgroundColor = color1;
         }
         // 적립시간 표시
         if (i < rows.length - 1 && dailyMaxWorkMinutes !== 0) {
@@ -255,8 +247,6 @@ function updateWorkHours() {
     }
 
     document.getElementById('dayExitTime').innerText = '';
-    // console.log("휴일시간 : " + (totalDeductedMinutesForHolidays));
-    // console.log("남은근무시간 : " + (remainingMinutes));
     updateChart(totalAccumulatedMinutes, remainingMinutes, totalDeductedMinutesForHolidays);
 }
 
