@@ -166,6 +166,7 @@ function updateWorkHours() {
             totalDeductedMinutesForHolidays += 8 * 60;
             rows[i].cells[5].innerText = '휴일(8시간 제외)'; // 휴일인 경우 근무 시간을 '휴일'로 표시
             rows[i].cells[5].style.color = color6;
+            rows[i].cells[6].innerText = '';
             rows[i].cells[0].style.color = color6;
             // rows[i].cells[5].style.backgroundColor = color1;
             continue;
