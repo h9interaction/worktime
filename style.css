@@ -191,8 +191,8 @@ select {
 
 /* 체크된 상태의 스타일 */
 .custom-checkbox input:checked+span {
-    background-color: #0ACFD9;
-    border: 1px solid #16b7c0;
+    background-color: #DCBCFF;
+    border: 1px solid #B068FF;
 }
 
 .custom-checkbox input:checked+span:after {

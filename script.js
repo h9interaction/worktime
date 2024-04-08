@@ -3,6 +3,7 @@ const color2 = '#EF6D81';
 const color3 = '#666666';
 const color4 = '#FFFFFF';
 const color5 = '#f3f3f3';
+const color6 = '#B068FF';
 
 window.onload = function () {
     makeTable();
@@ -159,11 +160,13 @@ function updateWorkHours() {
 
     for (let i = 1; i < rows.length; i++) {
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
+        rows[i].cells[0].style.color = color3;
         if (isHoliday) {
             // 휴일인 경우 전체 근무 시간에서 하루 8시간(480분)을 빼줌
             totalDeductedMinutesForHolidays += 8 * 60;
             rows[i].cells[5].innerText = '휴일(8시간 제외)'; // 휴일인 경우 근무 시간을 '휴일'로 표시
-            rows[i].cells[5].style.color = color1
+            rows[i].cells[5].style.color = color6;
+            rows[i].cells[0].style.color = color6;
             // rows[i].cells[5].style.backgroundColor = color1;
             continue;
         }
