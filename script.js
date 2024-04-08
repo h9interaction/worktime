@@ -2,6 +2,7 @@ const color1 = '#0ACFD9';
 const color2 = '#EF6D81';
 const color3 = '#666666';
 const color4 = '#FFFFFF';
+const color5 = '#f3f3f3';
 
 window.onload = function () {
     makeTable();
@@ -66,7 +67,7 @@ var workTimeChart = new Chart(ctx, {
 });
 
 function updateChart(completedTime, remainingTime, vacationTime) {
-    console.log('근무 완료시간: ' + completedTime + ', 남은 근무시간: ' + remainingTime + ', 휴일 시간: ' + vacationTime);
+    // console.log('근무 완료시간: ' + completedTime + ', 남은 근무시간: ' + remainingTime + ', 휴일 시간: ' + vacationTime);
     workTimeChart.data.datasets[0].data[0] = vacationTime;
     workTimeChart.data.datasets[0].data[1] = completedTime;
     workTimeChart.data.datasets[0].data[2] = remainingTime;
@@ -75,7 +76,7 @@ function updateChart(completedTime, remainingTime, vacationTime) {
 
 
 function makeTable() {
-    const days = ['월', '화', '수', '목', '금'];
+    const days = ['MON', 'TUE', 'WEN', 'THU', 'FRI'];
     const titles = ['요일', '출근 시간', '퇴근 시간', '휴가 시간', '휴일 체크', '근무 인정 시간(최대 9시간)', '적립시간 및 총 잔여 근무시간'];
     const tableBody = document.getElementById('workHoursTable').getElementsByTagName('tbody')[0];
     days.forEach((day, index) => {
@@ -83,10 +84,15 @@ function makeTable() {
         row.insertCell(0).innerText = day;
         row.cells[0].setAttribute('data-title', titles[0]);
         row.cells[0].classList.add('title');
+        row.cells[0].style.backgroundColor = color5;
+        row.cells[0].style.fontWeight = '900';
+        row.classList.add('day-row');
+        row.setAttribute('data-day', day);
         for (let i = 1; i <= 6; i++) { // 셀 추가로 인덱스 6까지 확장
             let cell = row.insertCell(i);
             cell.setAttribute('data-title', titles[i]);
             cell.classList.add('title');
+            cell.classList.add('details');
             if (i < 3) { // 출근 시간과 퇴근 시간 입력란
                 let input = document.createElement('input');
                 input.type = 'text';
@@ -144,7 +150,7 @@ function makeTable() {
 }
 
 function updateWorkHours() {
-    console.log('updateWorkHours');
+    // console.log('updateWorkHours');
     const rows = document.getElementById('workHoursTable').rows;
     let totalAccumulatedMinutes = 0;
 
@@ -244,9 +250,9 @@ function updateWorkHours() {
         rows[rows.length - 1].cells[6].style.color = color4;
     }
 
-    document.getElementById('fridayExitTime').innerText = '';
-    console.log("휴일시간 : " + (totalDeductedMinutesForHolidays));
-    console.log("남은근무시간 : " + (remainingMinutes));
+    document.getElementById('dayExitTime').innerText = '';
+    // console.log("휴일시간 : " + (totalDeductedMinutesForHolidays));
+    // console.log("남은근무시간 : " + (remainingMinutes));
     updateChart(totalAccumulatedMinutes, remainingMinutes, totalDeductedMinutesForHolidays);
 }
 
@@ -294,11 +300,11 @@ function resetAll() {
         rows[i].cells[6].innerText = '';
     }
     rows[rows.length - 1].cells[6].innerText = '40:00';
-    document.getElementById('fridayExitTime').innerText = '';
+    document.getElementById('dayExitTime').innerText = '';
     updateChart(0, 2400);
 }
 
-function calculateFridayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 비워진 첫번째 요일의 퇴근시간도 알려주기때문에 이름을 수정해야할것같음
+function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 비워진 첫번째 요일의 퇴근시간도 알려주기때문에 이름을 수정해야할것같음
     var targetDayOfWeek = "";
     const table = document.getElementById('workHoursTable');
     const rows = table.rows;
@@ -367,42 +373,23 @@ function calculateFridayExitTime() { // 금요일 뿐만 아니라 퇴근시간�
     // 퇴근 시간을 AM/PM 포맷으로 출력
     const exitTimeFormatted = targetdayExitMoment.format("hh:mm A");
     let remainingTimeFormatted = formatMinutesAsHours(remainingTotalMinutes);
-    // if (targetDayOfWeek === "금요일") {
-    // 해당요일에 휴가시간과 근무시간을 합쳐서 9시간이 넘으면 안되기때문에 체크
+
     const vacationTime = targetRow.cells[3].children[0].value;
     let checkVacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
     let checkRemainingTotalMinutes = remainingTotalMinutes + checkVacationMinutes;
-    // console.log(checkRemainingTotalMinutes / 60);
     if (checkRemainingTotalMinutes / 60 > 10) {
         let overWorkTime = checkRemainingTotalMinutes - 540 - 60;
         let overWorkTimeFormatted = formatMinutesAsHours(overWorkTime);
         const targetdayOverExitMoment = targetdayStartMoment.clone().add(remainingTotalMinutes - overWorkTime, 'minutes');
         const exitOverTimeFormatted = targetdayOverExitMoment.format("hh:mm A");
-        document.getElementById('fridayExitTime').innerHTML = `<span class="fridayExitTimeNormal">${targetDayOfWeek} 근무시간을 최대한 채울 수 있는 시간(9시간)인 </span>${exitOverTimeFormatted}<span class="fridayExitTimeNormal">에 퇴근하면</span><br /> 
-            <span class="fridayExitTimeNormal">남은 총 근무시간은</span> <span class="fridayExitTimeAlert">${overWorkTimeFormatted}</span> <span class="fridayExitTimeNormal">입니다.</span>`
+        document.getElementById('dayExitTime').innerHTML = `<span class="dayExitTimeNormal">${targetDayOfWeek} 근무시간을 최대한 채울 수 있는 시간(9시간)인 </span>${exitOverTimeFormatted}<span class="dayExitTimeNormal">에 퇴근하면</span><br /> 
+            <span class="dayExitTimeNormal">남은 총 근무시간은</span> <span class="dayExitTimeAlert">${overWorkTimeFormatted}</span> <span class="dayExitTimeNormal">입니다.</span>`
     } else {
-        document.getElementById('fridayExitTime').innerHTML
-            = `<span class="fridayExitTimeNormal">남은 근무시간은 ${isLaunchTime ? "휴게시간 포함</span>" : "</span>"} ${remainingTimeFormatted} <br />
-                <span class="fridayExitTimeNormal">${targetDayOfWeek} 퇴근은</span> ${exitTimeFormatted} <span class="fridayExitTimeNormal">이후부터 가능해요.</span>`;
+        document.getElementById('dayExitTime').innerHTML
+            = `<span class="dayExitTimeNormal">남은 근무시간은 ${isLaunchTime ? "휴게시간 포함</span>" : "</span>"} ${remainingTimeFormatted} <br />
+                <span class="dayExitTimeNormal">${targetDayOfWeek} 퇴근은</span> ${exitTimeFormatted} <span class="dayExitTimeNormal">이후부터 가능해요.</span>`;
     }
-    // } else {
-    // // 추가 적립 가능한 퇴근시간 계산
-    // const targetdayAccumulateMoment = targetdayStartMoment.clone().add((remainingTotalMinutes + 60), 'minutes');
-    // // 적립 가능 퇴근 시간 AM/PM 포멧으로 출력
-    // const accumulatedExitTimeFormatted = targetdayAccumulateMoment.format("hh:mm A");
-    // const rows = document.getElementById('workHoursTable').rows;
-    // const remainingTimeText = rows[rows.length - 1].cells[6].innerText;
-    // console.log(remainingTotalMinutes);
-
-
-    // document.getElementById('fridayExitTime').innerHTML
-    //     = `<span class="fridayExitTimeNormal">${targetDayOfWeek}은</span> ${exitTimeFormatted} <span class="fridayExitTimeNormal">퇴근하면 남은 근무시간이 채워져요.<br />남은 총 근무시간 ${remainingTimeText}</span>`;
-    // }
 }
-
-
-
-
 
 // Event listener to save changes and update work hours
 document.getElementById('workHoursTable').addEventListener('change', (event) => {

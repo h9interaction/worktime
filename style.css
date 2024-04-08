@@ -129,19 +129,19 @@ button:hover {
     background-color: #7d7d7d;
 }
 
-#fridayExitTime {
+#dayExitTime {
     margin-top: 20px;
     font-size: 14px;
     font-weight: 400;
     color: #0ACFD9;
 }
 
-.fridayExitTimeNormal {
+.dayExitTimeNormal {
     color: #6f6f6f;
     font-weight: 200;
 }
 
-.fridayExitTimeAlert {
+.dayExitTimeAlert {
     color: #EF6D81;
     font-weight: 400;
 }
@@ -186,11 +186,13 @@ select {
     display: inline-block;
     position: relative;
     border-radius: 5px;
+    border: 1px solid #d4d4d4;
 }
 
 /* 체크된 상태의 스타일 */
 .custom-checkbox input:checked+span {
     background-color: #0ACFD9;
+    border: 1px solid #16b7c0;
 }
 
 .custom-checkbox input:checked+span:after {
@@ -260,6 +262,10 @@ select {
         width: 100%;
         border: 0px;
     }
+
+    /* .details {
+        display: none;
+    } */
 
     .title-center {
         font-size: 2.5rem;
@@ -367,7 +373,7 @@ select {
 
     .action-container,
     .title-center,
-    #fridayExitTime {
+    #dayExitTime {
         margin-top: 15px;
         margin-bottom: 15px;
     }
