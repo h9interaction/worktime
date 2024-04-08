@@ -5,6 +5,8 @@ const color4 = '#FFFFFF';
 const color5 = '#f3f3f3';
 const color6 = '#B068FF';
 
+let remainingMinutes;
+
 window.onload = function () {
     makeTable();
 
@@ -76,8 +78,8 @@ function updateChart(completedTime, remainingTime, vacationTime) {
 
 
 function makeTable() {
-    const days = ['MON', 'TUE', 'WEN', 'THU', 'FRI'];
-    const titles = ['요일', '출근 시간', '퇴근 시간', '휴가 시간', '휴일 체크', '근무 인정 시간(최대 9시간)', '적립시간 및 총 잔여 근무시간'];
+    const days = ['월', '화', '수', '목', '금'];
+    const titles = ['요일', '출근 시간', '퇴근 시간', '휴가 시간', '휴일 체크', '인정 시간(최대 9시간)', '적립시간'];
     const tableBody = document.getElementById('workHoursTable').getElementsByTagName('tbody')[0];
     days.forEach((day, index) => {
         let row = tableBody.insertRow();
@@ -141,6 +143,8 @@ function makeTable() {
             } else {
                 cell.innerText = ''; // 나머지 셀은 초기값 설정
             }
+            // if (index === 4 && i === 6)
+            //     cell.style.fontWeight = '900';
         }
     });
 }
@@ -207,7 +211,7 @@ function updateWorkHours() {
             rows[i].cells[5].style.color = color1;
         }
         // 적립시간 표시
-        if (i < rows.length - 1 && dailyMaxWorkMinutes !== 0) {
+        if (i < rows.length && dailyMaxWorkMinutes !== 0) {
             let addedTime = dailyMaxWorkMinutes - 480;
             let isMinus = false;
             if (addedTime < 0) {
@@ -229,22 +233,24 @@ function updateWorkHours() {
 
                 }
             }
-        } else if (i < rows.length - 1 && dailyMaxWorkMinutes === 0) {
-            rows[i].cells[6].innerText = '';
         }
+        // 기존 마지막 셀에 총 남은 근무시간 표기 없애고 챠트로 옮김!
+        // else if (i < rows.length - 1 && dailyMaxWorkMinutes === 0) {
+        //     rows[i].cells[6].innerText = '';
+        // }
     }
 
     // 잔여 근무 시간 계산
     let totalRequiredMinutes = (40 * 60) - totalDeductedMinutesForHolidays; // 주당 근무 시간에서 휴일 시간을 뺀 값
-    let remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
-    rows[rows.length - 1].cells[6].innerText = formatMinutesAsHours(remainingMinutes); // 잔여 근무 시간 업데이트
+    remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
+    var numColor = color2;
     if (remainingMinutes > 0) {
-        rows[rows.length - 1].cells[6].style.backgroundColor = color2;
-        rows[rows.length - 1].cells[6].style.color = color4;
+        numColor = color2
     } else {
-        rows[rows.length - 1].cells[6].style.backgroundColor = color1;
-        rows[rows.length - 1].cells[6].style.color = color4;
+        numColor = color1
     }
+    document.getElementById('total-remainning-time').innerHTML =
+        '<div>총 잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + numColor + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>'; // 잔여 근무 시간 업데이트
 
     document.getElementById('dayExitTime').innerText = '';
     updateChart(totalAccumulatedMinutes, remainingMinutes, totalDeductedMinutesForHolidays);
@@ -293,7 +299,8 @@ function resetAll() {
         rows[i].cells[5].style.color = color3;
         rows[i].cells[6].innerText = '';
     }
-    rows[rows.length - 1].cells[6].innerText = '40:00';
+    document.getElementById('total-remainning-time').innerHTML = '<div>총 잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + color2 + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>';
+    // rows[rows.length - 1].cells[6].innerText = '40:00';
     document.getElementById('dayExitTime').innerText = '';
     updateChart(0, 2400);
 }
@@ -336,9 +343,9 @@ function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 
         return;
     }
 
-    const remainingWorkHoursText = (targetDayOfWeek === "금요일") ? rows[rows.length - 1].cells[6].innerText : rows[rows.length - 1].cells[6].innerText;//"08:00";
-    const [remainingHours, remainingMinutes] = remainingWorkHoursText.split(':').map(Number);
-    let remainingTotalMinutes = (remainingHours * 60) + remainingMinutes;
+    // const remainingWorkHoursText = (targetDayOfWeek === "금요일") ? rows[rows.length - 1].cells[6].innerText : rows[rows.length - 1].cells[6].innerText;//"08:00";
+    // const [remainingHours, remainingMinutes] = remainingWorkHoursText.split(':').map(Number);
+    let remainingTotalMinutes = remainingMinutes;// (remainingHours * 60) + remainingMinutes;
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
     const lunchStart = moment('12:30', "HH:mm");

@@ -66,6 +66,7 @@ td {
 }
 
 .chart-container {
+    position: relative;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -79,6 +80,27 @@ canvas {
     max-height: 300px;
     margin-bottom: 40px;
     z-index: 100;
+}
+
+.total-remainning-time {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    z-index: 999;
+    top: -40px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.total-remainning-time-num {
+    font-weight: 900;
+    display: block;
+    font-size: 20px;
 }
 
 button {
@@ -182,7 +204,7 @@ select {
 .custom-checkbox span {
     height: 18px;
     width: 18px;
-    background-color: #eee;
+    background-color: #ffffff;
     display: inline-block;
     position: relative;
     border-radius: 5px;
@@ -295,7 +317,6 @@ select {
         justify-content: center;
         border: none;
         border-bottom: 1px solid #dedede;
-        position: relative;
         /* padding: 10px; */
         padding: 10px 10px 10px 10px;
         padding-left: calc(40% + 30px);
@@ -407,5 +428,14 @@ select {
         font-size: 0.8rem;
         font-size: 12px;
     }
-
+}
+@media screen and (max-width: 309px) {
+    .total-remainning-time {
+        top: -50px;
+        font-size: 10px;
+    }
+    
+    .total-remainning-time-num {
+        font-size: 18px;
+    }
 }

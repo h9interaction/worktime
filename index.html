@@ -23,6 +23,9 @@
     <div class="title-center">일주일 개인 근무시간 관리</div>
     <div class="chart-container">
         <canvas id="workTimeChart" width="200px" height="200px" style="width:200px;height:200px"></canvas>
+        <div class="total-remainning-time" id="total-remainning-time">
+            -
+        </div>
     </div>
     <div class="table-container">
         <table id="workHoursTable">
@@ -34,7 +37,7 @@
                     <th class="table-title forth">휴가 시간</th>
                     <th class="table-title fifth">휴일</th>
                     <th class="table-title sixth">근무 인정 시간(최대 9시간)</th>
-                    <th class="table-title seventh">적립시간 및 총 잔여 근무시간</th>
+                    <th class="table-title seventh">적립시간</th>
                 </tr>
             </thead>
             <tbody>
