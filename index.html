@@ -7,7 +7,7 @@
     <title>일주일 개인 근무시간 관리</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=0.0.2">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
@@ -20,38 +20,40 @@
 </head>
 
 <body>
-    <div class="title-center">일주일 개인 근무시간 관리</div>
-    <div class="chart-container">
-        <canvas id="workTimeChart" width="200px" height="200px" style="width:200px;height:200px"></canvas>
-        <div class="total-remainning-time" id="total-remainning-time">
-            -
+    <div calss="content">
+        <div class="title-center">일주일 개인 근무시간 관리</div>
+        <div class="chart-container">
+            <canvas id="workTimeChart" width="200px" height="200px" style="width:200px;height:200px"></canvas>
+            <div class="total-remainning-time" id="total-remainning-time">
+                -
+            </div>
         </div>
-    </div>
-    <div class="table-container">
-        <table id="workHoursTable">
-            <thead>
-                <tr>
-                    <th class="table-title first">요일</th>
-                    <th class="table-title second">출근 시간</th>
-                    <th class="table-title third">퇴근 시간</th>
-                    <th class="table-title forth">휴가 시간</th>
-                    <th class="table-title fifth">휴일</th>
-                    <th class="table-title sixth">근무 인정 시간(최대 9시간)</th>
-                    <th class="table-title seventh">적립시간</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- JavaScript를 통해 동적으로 행 추가 -->
-            </tbody>
-        </table>
-    </div>
-    <div class="action-container">
-        <button onclick="calculatedayExitTime()">퇴근 가능 시간 계산</button>
-        <button class="reset-all" onclick="resetAll()">모든 설정 리셋</button>
-        <div id="dayExitTime"></div>
-    </div>
+        <div class="table-container">
+            <table id="workHoursTable">
+                <thead>
+                    <tr>
+                        <th class="table-title first">요일</th>
+                        <th class="table-title second">출근 시간</th>
+                        <th class="table-title third">퇴근 시간</th>
+                        <th class="table-title forth">휴가 시간</th>
+                        <th class="table-title fifth">휴일</th>
+                        <th class="table-title sixth">근무 인정 시간(최대 9시간)</th>
+                        <th class="table-title seventh">적립시간</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JavaScript를 통해 동적으로 행 추가 -->
+                </tbody>
+            </table>
+        </div>
+        <div class="action-container">
+            <button onclick="calculatedayExitTime()">퇴근 가능 시간 계산</button>
+            <button class="reset-all" onclick="resetAll()">모든 설정 리셋</button>
+            <div id="dayExitTime"></div>
+        </div>
 
-    <script src="script.js"></script>
+        <script src="script.js?v=0.0.2"></script>
+    </div>
 </body>
 
 </html>

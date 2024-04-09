@@ -1,8 +1,8 @@
 html,
 body {
     margin: 20px;
-    padding: 0;
-    min-height: 100%;
+    padding: 0px;
+    min-height: calc(100%-40px);
     font-family: 'Pretendard Variable', 'Apple SD Gothic Neo', sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -10,6 +10,7 @@ body {
     color: #666666;
     text-size-adjust: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
     text-align: center;
 }
 
@@ -95,6 +96,7 @@ canvas {
     justify-content: center;
     align-items: center;
     font-size: 12px;
+    pointer-events: none;
 }
 
 .total-remainning-time-num {
@@ -236,6 +238,7 @@ select {
         margin: 10px;
         font-size: 14px;
         line-height: 1.3;
+        min-height: calc(100%-20px);
     }
 
     .title-center {
@@ -284,10 +287,6 @@ select {
         width: 100%;
         border: 0px;
     }
-
-    /* .details {
-        display: none;
-    } */
 
     .title-center {
         font-size: 2.5rem;
@@ -385,6 +384,7 @@ select {
     body {
         margin: 10px;
         font-size: 14px;
+        min-height: calc(100%-20px);
     }
 
     .title-center {
@@ -429,12 +429,13 @@ select {
         font-size: 12px;
     }
 }
+
 @media screen and (max-width: 309px) {
     .total-remainning-time {
         top: -50px;
         font-size: 10px;
     }
-    
+
     .total-remainning-time-num {
         font-size: 18px;
     }

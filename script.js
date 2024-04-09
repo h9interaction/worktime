@@ -94,7 +94,7 @@ function makeTable() {
             let cell = row.insertCell(i);
             cell.setAttribute('data-title', titles[i]);
             cell.classList.add('title');
-            cell.classList.add('details');
+            cell.classList.add(day);
             if (i < 3) { // 출근 시간과 퇴근 시간 입력란
                 let input = document.createElement('input');
                 input.type = 'text';
@@ -341,7 +341,7 @@ function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 
         alert(`${targetDayOfWeek}의 출근 시간을 입력해주세요.`);
         return;
     }
-    
+
     let remainingTotalMinutes = remainingMinutes;// (remainingHours * 60) + remainingMinutes;
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
