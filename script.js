@@ -29,7 +29,7 @@ var workTimeChart = new Chart(ctx, {
         labels: ['휴일', '근무한 시간(휴가시간 포함)', '남은 시간'],
         datasets: [{
             label: '근무 시간',
-            data: [0, 2400, 0], // 여기서 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
+            data: [0, 2400, 0], // 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
             backgroundColor: [
                 'rgba(220, 188, 256, 1)', // 휴일 색상
                 'rgba(166, 232, 236, 1)', // 근무한 시간 색상
@@ -44,7 +44,7 @@ var workTimeChart = new Chart(ctx, {
         }]
     },
     options: {
-        responsive: true, // 차트가 컨테이너 크기에 맞춰 조정됩니다.
+        responsive: true, // 차트가 컨테이너 크기에 맞춰 조정.
         plugins: {
             legend: {
                 display: true, // 범례 표시 설정
@@ -143,8 +143,6 @@ function makeTable() {
             } else {
                 cell.innerText = ''; // 나머지 셀은 초기값 설정
             }
-            // if (index === 4 && i === 6)
-            //     cell.style.fontWeight = '900';
         }
     });
 }
@@ -234,10 +232,6 @@ function updateWorkHours() {
                 }
             }
         }
-        // 기존 마지막 셀에 총 남은 근무시간 표기 없애고 챠트로 옮김!
-        // else if (i < rows.length - 1 && dailyMaxWorkMinutes === 0) {
-        //     rows[i].cells[6].innerText = '';
-        // }
     }
 
     // 잔여 근무 시간 계산
@@ -304,17 +298,15 @@ function resetAll() {
     updateChart(0, 2400);
 }
 
-function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 비워진 첫번째 요일의 퇴근시간도 알려주기때문에 이름을 수정해야할것같음
+function calculatedayExitTime() {
     var targetDayOfWeek = "";
     const table = document.getElementById('workHoursTable');
     const rows = table.rows;
     let targetRow = null;
 
-
     for (let i = 1; i < rows.length; i++) {
         if (
             rows[i].cells[2].children[0].value === '' &&
-            // rows[i].cells[3].children[0].value === '없음' &&
             rows[i].cells[4].children[0].children[0].checked === false) {
             targetRow = rows[i];
             if (i === 1) {
@@ -389,7 +381,6 @@ function calculatedayExitTime() { // 금요일 뿐만 아니라 퇴근시간이 
     }
 }
 
-// Event listener to save changes and update work hours
 document.getElementById('workHoursTable').addEventListener('change', (event) => {
     saveTimeToLocalStorage();
     updateWorkHours();
