@@ -1,5 +1,5 @@
 const color1 = '#0ACFD9';
-const color2 = '#EF6D81';
+const color2 = '#F67777';
 const color3 = '#666666';
 const color4 = '#FFFFFF';
 const color5 = '#f3f3f3';
