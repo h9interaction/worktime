@@ -4,6 +4,7 @@ const color3 = '#666666';
 const color4 = '#FFFFFF';
 const color5 = '#f3f3f3';
 const color6 = '#B068FF';
+const color7 = '#F6F3FA';
 const chartColor11 = '#C8A6F1'; // 휴일 색상
 const chartColor22 = '#9CE4F1'; // 근무 인정 시간 색상
 const chartColor33 = '#F7E58B'; // 휴가 시간 색상
@@ -181,15 +182,34 @@ function calcTotalRequiredMinutesAndUpdateTable() {
     for (let i = 1; i < rows.length; i++) {
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
         rows[i].cells[0].style.color = color3;
+        rows[i].style.backgroundColor = color4;
         if (isHoliday) {
             // 휴일인 경우 전체 근무 시간에서 하루 8시간(480분)을 빼줌
             totalHolidayTime += 8 * 60;
             rows[i].cells[5].innerText = '휴일(8시간 제외)'; // 휴일인 경우 근무 시간을 '휴일'로 표시
             rows[i].cells[5].style.color = color6;
+            rows[i].style.backgroundColor = color7;
+            rows[i].cells[1].children[0].style.backgroundColor = color7;
+            rows[i].cells[1].children[0].value = '';
+            rows[i].cells[1].children[0].disabled = true;
+            rows[i].cells[2].children[0].style.backgroundColor = color7;
+            rows[i].cells[2].children[0].value = '';
+            rows[i].cells[2].children[0].disabled = true;
+            rows[i].cells[3].children[0].style.backgroundColor = color7;
+            rows[i].cells[3].children[0].value = '없음';
+            rows[i].cells[3].children[0].disabled = true;
             rows[i].cells[6].innerText = '';
             rows[i].cells[0].style.color = color6;
+            // rows[i].cells[5].backgroundColor = color5;
             continue;
         }
+
+        rows[i].cells[1].children[0].style.backgroundColor = color4;
+        rows[i].cells[2].children[0].style.backgroundColor = color4;
+        rows[i].cells[3].children[0].style.backgroundColor = color4;
+        rows[i].cells[1].children[0].disabled = false;
+        rows[i].cells[2].children[0].disabled = false;
+        rows[i].cells[3].children[0].disabled = false;
 
         const startTime = rows[i].cells[1].children[0].value;
         const endTime = rows[i].cells[2].children[0].value;
@@ -210,7 +230,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
         if (dailyMaxWorkMinutes < 480) {
             if (dailyMaxWorkMinutes === 0) {
                 rows[i].cells[5].style.color = color3;
-                rows[i].cells[5].style.backgroundColor = color4
+                // rows[i].cells[5].style.backgroundColor = color4
             } else {
                 rows[i].cells[5].style.color = color2;
                 if (dailyMaxWorkMinutes < 0) {
@@ -304,9 +324,16 @@ function resetAll() {
         rows[i].cells[3].children[0].value = '없음';
         rows[i].cells[4].children[0].children[0].checked = false;
         rows[i].cells[5].innerText = '';
-        rows[i].cells[5].style.backgroundColor = color4;
+        // rows[i].cells[5].style.backgroundColor = color4;
+        rows[i].style.backgroundColor = color4;
         rows[i].cells[5].style.color = color3;
         rows[i].cells[6].innerText = '';
+        rows[i].cells[1].children[0].style.backgroundColor = color4;
+        rows[i].cells[2].children[0].style.backgroundColor = color4;
+        rows[i].cells[3].children[0].style.backgroundColor = color4;
+        rows[i].cells[1].children[0].disabled = false;
+        rows[i].cells[2].children[0].disabled = false;
+        rows[i].cells[3].children[0].disabled = false;
     }
     remainingMinutes = 2400;
     document.getElementById('total-remainning-time').innerHTML = '<div>잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + color2 + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>';
