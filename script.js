@@ -6,7 +6,7 @@ const color5 = '#f3f3f3';
 const color6 = '#B068FF';
 const chartColor11 = '#C8A6F1'; // 휴일 색상
 const chartColor22 = '#9CE4F1'; // 근무 인정 시간 색상
-const chartColor33 = '#F1E298'; // 휴가 시간 색상
+const chartColor33 = '#F7E58B'; // 휴가 시간 색상
 const chartColor44 = '#F79999'; // 남은 시간 색상
 
 let remainingMinutes;
@@ -298,7 +298,7 @@ function resetAll() {
         localStorage.removeItem(`endTime${i}`);
         localStorage.removeItem(`vacationTime${i}`);
         localStorage.removeItem(`holiday${i}`);
-
+        rows[i].cells[0].style.color = color3;
         rows[i].cells[1].children[0].value = '';
         rows[i].cells[2].children[0].value = '';
         rows[i].cells[3].children[0].value = '없음';
