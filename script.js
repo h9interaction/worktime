@@ -6,7 +6,7 @@ const color5 = '#f3f3f3';
 const color6 = '#B068FF';
 const chartColor11 = '#C8A6F1'; // 휴일 색상
 const chartColor22 = '#9CE4F1'; // 근무 인정 시간 색상
-const chartColor33 = '#F1EE98'; // 휴가 시간 색상
+const chartColor33 = '#F1E298'; // 휴가 시간 색상
 const chartColor44 = '#F79999'; // 남은 시간 색상
 
 let remainingMinutes;
@@ -47,7 +47,7 @@ var workTimeChart = new Chart(ctx, {
                 color4,
                 color4
             ],
-            borderWidth: 1
+            borderWidth: 0
         }]
     },
     options: {
