@@ -4,6 +4,10 @@ const color3 = '#666666';
 const color4 = '#FFFFFF';
 const color5 = '#f3f3f3';
 const color6 = '#B068FF';
+const chartColor11 = '#C8A6F1'; // 휴일 색상
+const chartColor22 = '#9CE4F1'; // 근무 인정 시간 색상
+const chartColor33 = '#F1EE98'; // 휴가 시간 색상
+const chartColor44 = '#F79999'; // 남은 시간 색상
 
 let remainingMinutes;
 
@@ -22,23 +26,26 @@ window.onload = function () {
     updateWorkHours();
 };
 
+// make chart
 var ctx = document.getElementById('workTimeChart').getContext('2d');
 var workTimeChart = new Chart(ctx, {
     type: 'doughnut', // 원형 그래프 유형
     data: {
-        labels: ['휴일', '근무한 시간(휴가시간 포함)', '남은 시간'],
+        labels: ['휴일', '근무 인정 시간', '휴가 시간', '남은 시간'],
         datasets: [{
             label: '근무 시간',
-            data: [0, 2400, 0], // 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
+            data: [0, 0, 0, 0], // 첫 번째 값은 인정된 근무 시간, 두 번째 값은 남은 근무 시간(40시간 중에서)
             backgroundColor: [
-                'rgba(220, 188, 256, 1)', // 휴일 색상
-                'rgba(166, 232, 236, 1)', // 근무한 시간 색상
-                'rgba(236, 236, 236, 1)' // 남은 시간 색상
+                chartColor11, // 휴일 색상
+                chartColor22, // 근무한 시간 색상
+                chartColor33,
+                chartColor44 // 남은 시간 색상
             ],
             borderColor: [
-                'rgba(255, 255, 255, 1)',
-                'rgba(255, 255, 255, 1)',
-                'rgba(255, 255, 255, 1)'
+                color4,
+                color4,
+                color4,
+                color4
             ],
             borderWidth: 1
         }]
@@ -68,14 +75,6 @@ var workTimeChart = new Chart(ctx, {
         }
     }
 });
-
-function updateChart(completedTime, remainingTime, vacationTime) {
-    workTimeChart.data.datasets[0].data[0] = vacationTime;
-    workTimeChart.data.datasets[0].data[1] = completedTime;
-    workTimeChart.data.datasets[0].data[2] = remainingTime;
-    workTimeChart.update();
-}
-
 
 function makeTable() {
     const days = ['월', '화', '수', '목', '금'];
@@ -148,18 +147,46 @@ function makeTable() {
 }
 
 function updateWorkHours() {
+    const { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes } = calcTotalRequiredMinutesAndUpdateTable();
+    console.log("휴일시간: " + (totalHolidayTime));
+    console.log("근무시간: " + (totalAccumulatedMinutes - totalVacationMinutes));
+    console.log("휴가시간: " + (totalVacationMinutes));
+    updateChart(totalAccumulatedMinutes - totalVacationMinutes, remainingMinutes, totalHolidayTime, totalVacationMinutes);
+}
+// update chart
+function updateChart(completedTime, remainingTime, holidayTime, vacationTime) {
+    workTimeChart.data.datasets[0].data[0] = holidayTime;
+    workTimeChart.data.datasets[0].data[1] = completedTime;
+    workTimeChart.data.datasets[0].data[2] = vacationTime;
+    workTimeChart.data.datasets[0].data[3] = remainingTime;
+    workTimeChart.update();
+    var numColor = color2;
+    if (remainingMinutes > 0) {
+        numColor = color2
+    } else {
+        numColor = color1
+    }
+    document.getElementById('total-remainning-time').innerHTML =
+        '<div>잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + numColor + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>'; // 잔여 근무 시간 업데이트
+
+    document.getElementById('dayExitTime').innerText = '';
+}
+
+// 잔여 근무 시간 계산
+function calcTotalRequiredMinutesAndUpdateTable() {
     const rows = document.getElementById('workHoursTable').rows;
     let totalAccumulatedMinutes = 0;
 
     // 휴일에 대해 빼줄 근무 시간 총합
-    let totalDeductedMinutesForHolidays = 0;
+    let totalHolidayTime = 0;
+    let totalVacationMinutes = 0;
 
     for (let i = 1; i < rows.length; i++) {
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
         rows[i].cells[0].style.color = color3;
         if (isHoliday) {
             // 휴일인 경우 전체 근무 시간에서 하루 8시간(480분)을 빼줌
-            totalDeductedMinutesForHolidays += 8 * 60;
+            totalHolidayTime += 8 * 60;
             rows[i].cells[5].innerText = '휴일(8시간 제외)'; // 휴일인 경우 근무 시간을 '휴일'로 표시
             rows[i].cells[5].style.color = color6;
             rows[i].cells[6].innerText = '';
@@ -171,20 +198,8 @@ function updateWorkHours() {
         const endTime = rows[i].cells[2].children[0].value;
         const vacationTime = rows[i].cells[3].children[0].value;
         let vacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
-
-        let workMinutes = 0;
-        if (startTime && endTime) {
-            const startMoment = moment(startTime, "HH:mm");
-            const endMoment = moment(endTime, "HH:mm");
-            if (startMoment.isValid() && endMoment.isValid()) {
-                workMinutes = moment.duration(endMoment.diff(startMoment)).asMinutes();
-
-                // 점심시간 제외
-                if (!endMoment.isBefore(moment('12:30', "HH:mm")) && !startMoment.isAfter(moment('13:30', "HH:mm"))) {
-                    workMinutes -= 60; // 점심시간 1시간 제외
-                }
-            }
-        }
+        totalVacationMinutes += vacationMinutes;
+        let workMinutes = calculateWorkDuration(startTime, endTime);
 
         // 근무 인정 시간에 휴가 시간 포함
         workMinutes += vacationMinutes;
@@ -194,7 +209,7 @@ function updateWorkHours() {
 
         let hours = Math.floor(dailyMaxWorkMinutes / 60);
         let mins = dailyMaxWorkMinutes % 60;
-        rows[i].cells[5].innerText = `${pad(hours)}:${pad(mins)}`; // 근무 인정 시간 업데이트
+        rows[i].cells[5].innerText = (workMinutes > 0) ? `${pad(hours)}:${pad(mins)}` : ''; // 근무 인정 시간 업데이트
         if (dailyMaxWorkMinutes < 480) {
             if (dailyMaxWorkMinutes === 0) {
                 rows[i].cells[5].style.color = color3;
@@ -209,6 +224,7 @@ function updateWorkHours() {
             rows[i].cells[5].style.color = color1;
         }
         // 적립시간 표시
+        rows[i].cells[6].innerText = ''; // 리셋먼저...
         if (i < rows.length && dailyMaxWorkMinutes !== 0) {
             let addedTime = dailyMaxWorkMinutes - 480;
             let isMinus = false;
@@ -224,30 +240,32 @@ function updateWorkHours() {
             } else {
                 if (addedTime === 0) {
                     rows[i].cells[6].style.color = color3;
-                    rows[i].cells[6].innerText = '-';
+                    rows[i].cells[6].innerText = '.';
                 } else {
                     rows[i].cells[6].innerText = `+${pad(_hours)}:${pad(_mins)} 적립`;
                     rows[i].cells[6].style.color = color1;
-
                 }
             }
         }
     }
-
-    // 잔여 근무 시간 계산
-    let totalRequiredMinutes = (40 * 60) - totalDeductedMinutesForHolidays; // 주당 근무 시간에서 휴일 시간을 뺀 값
+    let totalRequiredMinutes = (40 * 60) - totalHolidayTime; // 주당 근무 시간에서 휴일 시간을 뺀 값
     remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
-    var numColor = color2;
-    if (remainingMinutes > 0) {
-        numColor = color2
-    } else {
-        numColor = color1
-    }
-    document.getElementById('total-remainning-time').innerHTML =
-        '<div>총 잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + numColor + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>'; // 잔여 근무 시간 업데이트
 
-    document.getElementById('dayExitTime').innerText = '';
-    updateChart(totalAccumulatedMinutes, remainingMinutes, totalDeductedMinutesForHolidays);
+    return { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes };
+}
+
+function calculateWorkDuration(startTime, endTime) {
+    const startMoment = moment(startTime, "HH:mm");
+    const endMoment = moment(endTime, "HH:mm");
+    let duration = 0;
+    if (startMoment.isValid() && endMoment.isValid()) {
+        duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
+        // 점심 시간 체크
+        if (!endMoment.isBefore(moment('12:30', "HH:mm")) && !startMoment.isAfter(moment('13:30', "HH:mm"))) {
+            duration -= 60;
+        }
+    }
+    return duration;
 }
 
 function formatMinutesAsHours(minutes) {
@@ -288,20 +306,20 @@ function resetAll() {
         rows[i].cells[2].children[0].value = '';
         rows[i].cells[3].children[0].value = '없음';
         rows[i].cells[4].children[0].children[0].checked = false;
-        rows[i].cells[5].innerText = '00:00';
+        rows[i].cells[5].innerText = '';
         rows[i].cells[5].style.backgroundColor = color4;
         rows[i].cells[5].style.color = color3;
         rows[i].cells[6].innerText = '';
     }
-    document.getElementById('total-remainning-time').innerHTML = '<div>총 잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + color2 + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>';
+    remainingMinutes = 2400;
+    document.getElementById('total-remainning-time').innerHTML = '<div>잔여 근무시간' + '<span class="total-remainning-time-num" style="color: ' + color2 + '">' + formatMinutesAsHours(remainingMinutes) + '</span></div>';
     document.getElementById('dayExitTime').innerText = '';
     updateChart(0, 2400);
 }
 
 function calculatedayExitTime() {
     var targetDayOfWeek = "";
-    const table = document.getElementById('workHoursTable');
-    const rows = table.rows;
+    const rows = document.getElementById('workHoursTable').rows;
     let targetRow = null;
 
     for (let i = 1; i < rows.length; i++) {
@@ -382,6 +400,6 @@ function calculatedayExitTime() {
 }
 
 document.getElementById('workHoursTable').addEventListener('change', (event) => {
-    saveTimeToLocalStorage();
     updateWorkHours();
+    saveTimeToLocalStorage();
 });

@@ -89,7 +89,7 @@ canvas {
     height: 100%;
     margin: 0px;
     padding: 0px;
-    z-index: 999;
+    z-index: 0;
     top: -40px;
     left: 0px;
     display: flex;
