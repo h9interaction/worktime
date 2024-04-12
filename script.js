@@ -148,9 +148,6 @@ function makeTable() {
 
 function updateWorkHours() {
     const { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes } = calcTotalRequiredMinutesAndUpdateTable();
-    console.log("휴일시간: " + (totalHolidayTime));
-    console.log("근무시간: " + (totalAccumulatedMinutes - totalVacationMinutes));
-    console.log("휴가시간: " + (totalVacationMinutes));
     updateChart(totalAccumulatedMinutes - totalVacationMinutes, remainingMinutes, totalHolidayTime, totalVacationMinutes);
 }
 // update chart
