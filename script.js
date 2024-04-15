@@ -190,10 +190,10 @@ function calcTotalRequiredMinutesAndUpdateTable() {
             rows[i].cells[5].style.color = color6;
             rows[i].style.backgroundColor = color7;
             rows[i].cells[1].children[0].style.backgroundColor = color7;
-            rows[i].cells[1].children[0].value = '';
+            // rows[i].cells[1].children[0].value = '';
             rows[i].cells[1].children[0].disabled = true;
             rows[i].cells[2].children[0].style.backgroundColor = color7;
-            rows[i].cells[2].children[0].value = '';
+            // rows[i].cells[2].children[0].value = '';
             rows[i].cells[2].children[0].disabled = true;
             rows[i].cells[3].children[0].style.backgroundColor = color7;
             rows[i].cells[3].children[0].value = '없음';
