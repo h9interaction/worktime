@@ -65,6 +65,9 @@ td {
 .seventh {
     width: 150px;
 }
+#total-accumulation-time{
+    font-weight: 500;
+}
 
 .chart-container {
     position: relative;

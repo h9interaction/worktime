@@ -179,6 +179,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
     // 휴일에 대해 빼줄 근무 시간 총합
     let totalHolidayTime = 0;
     let totalVacationMinutes = 0;
+    let totalAddedTime = 0;
 
     for (let i = 1; i < rows.length; i++) {
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
@@ -245,6 +246,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
         rows[i].cells[6].innerText = ''; // 리셋먼저...
         if (i < rows.length && dailyMaxWorkMinutes !== 0) {
             let addedTime = dailyMaxWorkMinutes - 480;
+            totalAddedTime += addedTime;
             let isMinus = false;
             if (addedTime < 0) {
                 isMinus = true;
@@ -265,6 +267,13 @@ function calcTotalRequiredMinutesAndUpdateTable() {
                 }
             }
         }
+        // console.log('totalAddedTime: ' + totalAddedTime);
+    }
+    var stringTotalAddedTime = formatMinutesAsHours(totalAddedTime);
+    if (totalAddedTime < 0) {
+        document.getElementById('total-accumulation-time').innerHTML = `총 적립 시간 : <span style="color: ` + color2 + `">` + stringTotalAddedTime + ` 부족</span>`;
+    } else {
+        document.getElementById('total-accumulation-time').innerHTML = `총 적립 시간 : <span style="color: ` + color1 + `">` + stringTotalAddedTime + ` 적립</span>`;
     }
     let totalRequiredMinutes = (40 * 60) - totalHolidayTime; // 주당 근무 시간에서 휴일 시간을 뺀 값
     remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
@@ -293,7 +302,12 @@ function formatMinutesAsHours(minutes) {
 }
 
 function pad(number) {
-    return number < 10 ? '0' + number : number.toString();
+    if (number < 0) {
+        var minusNum = number *= -1;
+        return minusNum < 10 ? '0' + minusNum : number.toString();
+    } else {
+        return number < 10 ? '0' + number : number.toString();
+    }
 }
 
 
