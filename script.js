@@ -380,7 +380,7 @@ function calculatedayExitTime() {
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
     const lunchStart = moment('12:30', "HH:mm");
-    const lunchEnd = moment('13:30', "HH:mm");
+    const lunchEnd = moment('13:29', "HH:mm");
 
     // 출근 시간과 남은 근무 시간을 기준으로 초기 퇴근 시간을 계산
     let tentativeTargetdayExitMoment = targetdayStartMoment.clone().add(remainingTotalMinutes, 'minutes');
