@@ -278,7 +278,7 @@ function calculateWorkDuration(startTime, endTime) {
     if (startMoment.isValid() && endMoment.isValid()) {
         duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
         // 점심 시간 체크
-        if (!endMoment.isBefore(moment('12:30', "HH:mm")) && !startMoment.isAfter(moment('13:30', "HH:mm"))) {
+        if (!endMoment.isBefore(moment('12:30', "HH:mm")) && !startMoment.isAfter(moment('13:29', "HH:mm"))) {
             duration -= 60;
         }
     }
