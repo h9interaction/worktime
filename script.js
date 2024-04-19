@@ -21,6 +21,7 @@ window.onload = function () {
         'step': 1,
         'disableTimeRanges': [
             ['00:00 AM', '08:00 AM'],
+            ['00:30 PM', '01:30 PM'],
             ['09:30 PM', '11:59 PM']
         ]
     });
