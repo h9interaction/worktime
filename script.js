@@ -414,14 +414,17 @@ function calculatedayExitTime() {
     // 퇴근시간이 점심 시작시간 이후라면 1시간 휴게시간 포함
     let lunchTimeMessage = '점심시간 이전';
     if (dayExitMoment.isAfter(lunchStart)) {
-        dayExitMoment.add(60, 'minutes');
+        if (targetdayStartMoment.isBefore(lunchStart))
+            dayExitMoment.add(60, 'minutes');
         lunchTimeMessage = '점심 휴게시간 이후';
+
     }
     // todo : 그날의 적립시간 포함 퇴근시간 계산
     let dayAddedExitMoment = targetdayStartMoment.clone().add(dayWorkTime - totalAddedMinutes, 'minutes');
     // 퇴근시간이 점심 시작시간 이후라면 1시간 휴게시간 포함
     let lunchTimeMessageAdded = '점심시간 이전';
     if (dayAddedExitMoment.isAfter(lunchStart)) {
+        if (targetdayStartMoment.isBefore(lunchStart))
         dayAddedExitMoment.add(60, 'minutes');
         lunchTimeMessageAdded = '점심 휴게시간 이후';
     }
