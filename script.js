@@ -1,4 +1,3 @@
-
 const color1 = '#0ACFD9';
 const color2 = '#F67777';
 const color3 = '#666666';
@@ -22,7 +21,7 @@ window.onload = function () {
         'step': 1,
         'disableTimeRanges': [
             ['00:00 AM', '08:00 AM'],
-            ['00:30 PM', '01:30 PM'],
+            ['00:31 PM', '01:30 PM'],
             ['09:30 PM', '11:59 PM']
         ]
     });
@@ -181,6 +180,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
     let totalHolidayTime = 0;
     let totalVacationMinutes = 0;
     let totalAddedMinutes = 0;
+    let addedTimesArray = [0, 0, 0, 0, 0, 0]; // 0,월,화,수,목,금
 
     for (let i = 1; i < rows.length; i++) {
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
@@ -245,6 +245,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
         if (i < rows.length && dailyMaxWorkMinutes !== 0) {
             let addedTime = dailyMaxWorkMinutes - 480;
             totalAddedMinutes += addedTime;
+            addedTimesArray[i] = addedTime;
             let isMinus = false;
             if (addedTime < 0) {
                 isMinus = true;
@@ -281,7 +282,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
     let totalRequiredMinutes = (40 * 60) - totalHolidayTime; // 주당 근무 시간에서 휴일 시간을 뺀 값
     remainingMinutes = Math.max(0, totalRequiredMinutes - totalAccumulatedMinutes); // 음수 방지
 
-    return { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes, totalAddedMinutes };
+    return { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes, totalAddedMinutes, addedTimesArray };
 }
 
 function calculateWorkDuration(startTime, endTime) {
@@ -291,7 +292,7 @@ function calculateWorkDuration(startTime, endTime) {
     if (startMoment.isValid() && endMoment.isValid()) {
         duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
         // 점심 시간 체크
-        if (!endMoment.isBefore(moment('12:30', "HH:mm")) && !startMoment.isAfter(moment('13:29', "HH:mm"))) {
+        if (!endMoment.isBefore(moment('12:31', "HH:mm")) && !startMoment.isAfter(moment('13:29', "HH:mm"))) {
             duration -= 60;
         }
     }
@@ -362,12 +363,14 @@ function calculatedayExitTime() {
     var targetDayOfWeek = "";
     const rows = document.getElementById('workHoursTable').rows;
     let targetRow = null;
+    let targetIndex = 0;
 
     for (let i = 1; i < rows.length; i++) {
         if (
             rows[i].cells[2].children[0].value === '' &&
             rows[i].cells[4].children[0].children[0].checked === false) {
             targetRow = rows[i];
+            targetIndex = i;
             if (i === 1) {
                 targetDayOfWeek = "월요일";
             } else if (i === 2) {
@@ -396,9 +399,9 @@ function calculatedayExitTime() {
     // let remainingTotalMinutes = remainingMinutes;// (remainingHours * 60) + remainingMinutes;
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
-    const lunchStart = moment('12:30', "HH:mm");
+    const lunchStart = moment('12:31', "HH:mm");
     const lunchEnd = moment('13:29', "HH:mm");
-    const { totalAddedMinutes } = calcTotalRequiredMinutesAndUpdateTable();
+    const { totalAddedMinutes, addedTimesArray } = calcTotalRequiredMinutesAndUpdateTable();
 
     // 오전 반반차, 오전 반차, 오후 반차, 오후 반반차 인지 확인할 필요가 있을까?
     // 480분이 하루 근무시간 + 휴게시간 60분을 넣을지 말지 정해야하는데,
@@ -417,21 +420,21 @@ function calculatedayExitTime() {
         if (targetdayStartMoment.isBefore(lunchStart))
             dayExitMoment.add(60, 'minutes');
         lunchTimeMessage = '점심 휴게시간 이후';
-
     }
-    // todo : 그날의 적립시간 포함 퇴근시간 계산
-    let dayAddedExitMoment = targetdayStartMoment.clone().add(dayWorkTime - totalAddedMinutes, 'minutes');
+    // todo : 그 전날의 적립시간 포함 퇴근시간 계산
+    var targetDayRemoveAddedTime = totalAddedMinutes - addedTimesArray[targetIndex];
+    let dayAddedExitMoment = targetdayStartMoment.clone().add(dayWorkTime - targetDayRemoveAddedTime, 'minutes');
     // 퇴근시간이 점심 시작시간 이후라면 1시간 휴게시간 포함
     let lunchTimeMessageAdded = '점심시간 이전';
     if (dayAddedExitMoment.isAfter(lunchStart)) {
         if (targetdayStartMoment.isBefore(lunchStart))
-        dayAddedExitMoment.add(60, 'minutes');
+            dayAddedExitMoment.add(60, 'minutes');
         lunchTimeMessageAdded = '점심 휴게시간 이후';
     }
 
     //! 적립시간이 +인경우와 -인경우 표기 방법 고민!
     document.getElementById('dayExitTime').innerHTML = `<span class="dayExitTimeNormal">${targetDayOfWeek} 정시 퇴근은 ${lunchTimeMessage} <b>${dayExitMoment.format("hh:mm A")}</b></span><span class="dayExitTimeNormal"></span><br />
-        <span class="dayExitTimeNormal"}>적립시간 계산 시 ${lunchTimeMessageAdded}</span> <span class="${totalAddedMinutes >= 0 ? "" : "dayExitTimeAlert"}"><b>${dayAddedExitMoment.format("hh:mm A")}</b> <span class="dayExitTimeNormal">입니다.</span>
+        <span class="dayExitTimeNormal"}>전날 까지의 적립시간 계산 시 ${lunchTimeMessageAdded}</span> <span class="${totalAddedMinutes >= 0 ? "" : "dayExitTimeAlert"}"><b>${dayAddedExitMoment.format("hh:mm A")}</b> <span class="dayExitTimeNormal">입니다.</span>
         ${totalAddedMinutes < 0 ? "<br /> <span class='dayExitTimeAlert'>남은 근무일 수로 잔여 근무시간을 채우 수 있을지 확인이 필요합니다!" : ""}`;
     //! 계산 된 퇴근시간이 근무인정 시간 최대 9시간안으로 들어오는지 벗어나는지 확인 필요!!
 
