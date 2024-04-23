@@ -120,7 +120,7 @@ function makeTable() {
                 cell.appendChild(resetBtn);
             } else if (i === 3) { // 휴가 시간 선택
                 let select = document.createElement('select');
-                ['없음', '2시간', '4시간'].forEach(option => {
+                ['없음', '2시간', '4시간', '8시간'].forEach(option => {
                     let optionElement = document.createElement('option');
                     optionElement.value = option;
                     optionElement.textContent = option;
