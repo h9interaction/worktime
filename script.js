@@ -17,7 +17,7 @@ window.onload = function () {
 
     $('.timepicker-input').timepicker({
         'scrollDefault': 'now',
-        'timeFormat': 'H:i A',
+        'timeFormat': 'A H:i',
         'step': 1,
         'disableTimeRanges': [
             ['00:00 AM', '08:00 AM'],
@@ -33,7 +33,7 @@ window.onload = function () {
         saveSettings();
     });
     $('#timeFormat').change(function() {
-        var newFormat = $(this).val() === "24" ? 'H:i A' : 'g:i A';
+        var newFormat = $(this).val() === "24" ? 'A H:i' : 'A g:i';
         $('.timepicker-input').timepicker('option', 'timeFormat', newFormat);
         saveSettings();
     });
