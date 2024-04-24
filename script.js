@@ -26,6 +26,11 @@ window.onload = function () {
         ]
     });
     updateWorkHours();
+    
+    $('#timeStep').change(function() {
+        var newStep = $(this).val();
+        $('.timepicker-input').timepicker('option', 'step', parseInt(newStep));
+    });
 };
 
 // make chart
