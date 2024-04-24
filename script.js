@@ -26,11 +26,18 @@ window.onload = function () {
         ]
     });
     updateWorkHours();
-    
+
     $('#timeStep').change(function() {
         var newStep = $(this).val();
         $('.timepicker-input').timepicker('option', 'step', parseInt(newStep));
+        saveSettings();
     });
+    $('#timeFormat').change(function() {
+        var newFormat = $(this).val() === "24" ? 'H:i A' : 'g:i A';
+        $('.timepicker-input').timepicker('option', 'timeFormat', newFormat);
+        saveSettings();
+    });
+    applySettings();
 };
 
 // make chart
@@ -216,8 +223,9 @@ function calcTotalRequiredMinutesAndUpdateTable() {
         rows[i].cells[2].children[0].disabled = false;
         rows[i].cells[3].children[0].disabled = false;
 
-        const startTime = rows[i].cells[1].children[0].value;
-        const endTime = rows[i].cells[2].children[0].value;
+        const startTime = convertTo24HourFormat(rows[i].cells[1].children[0].value);
+        const endTime = convertTo24HourFormat(rows[i].cells[2].children[0].value);
+        console.log("endTime : "+endTime);
         const vacationTime = rows[i].cells[3].children[0].value;
         let vacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
         totalVacationMinutes += vacationMinutes;
@@ -323,8 +331,8 @@ function pad(number) {
 function saveTimeToLocalStorage() {
     const rows = document.getElementById('workHoursTable').rows;
     for (let i = 1; i < rows.length; i++) {
-        const startTime = rows[i].cells[1].children[0].value;
-        const endTime = rows[i].cells[2].children[0].value;
+        const startTime = convertTo24HourFormat(rows[i].cells[1].children[0].value);
+        const endTime = convertTo24HourFormat(rows[i].cells[2].children[0].value);
         const vacationTime = rows[i].cells[3].children[0].value;
         const isHoliday = rows[i].cells[4].children[0].children[0].checked;
 
@@ -332,6 +340,25 @@ function saveTimeToLocalStorage() {
         localStorage.setItem(`endTime${i}`, endTime);
         localStorage.setItem(`vacationTime${i}`, vacationTime);
         localStorage.setItem(`holiday${i}`, isHoliday);
+    }
+}
+
+function saveSettings() {
+    const timeStep = $('#timeStep').val();
+    const timeFormat = $('#timeFormat').val();
+    localStorage.setItem('timeStep', timeStep);
+    localStorage.setItem('timeFormat', timeFormat);
+}
+
+function applySettings() {
+    const savedTimeStep = localStorage.getItem('timeStep');
+    const savedTimeFormat = localStorage.getItem('timeFormat');
+
+    if (savedTimeStep) {
+        $('#timeStep').val(savedTimeStep).change();
+    }
+    if (savedTimeFormat) {
+        $('#timeFormat').val(savedTimeFormat).change();
     }
 }
 
@@ -477,6 +504,30 @@ function calculatedayExitTime() {
     //         = `<span class="dayExitTimeNormal">남은 근무시간은 ${isLaunchTime ? "휴게시간 포함</span>" : "</span>"} ${remainingTimeFormatted} <br />
     //             <span class="dayExitTimeNormal">${targetDayOfWeek} 퇴근은</span> ${exitTimeFormatted} <span class="dayExitTimeNormal">이후부터 가능해요.</span>`;
     // }
+}
+
+function convertTo24HourFormat(time) {
+    // 입력된 시간에서 숫자와 AM/PM을 추출
+    const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!match) {
+        return time; // 형식이 맞지 않으면 원본 반환
+    }
+
+    let hours = parseInt(match[1], 10);
+    const minutes = match[2];
+    const period = match[3].toUpperCase();
+
+    // PM이고, 시간이 12시가 아닌 경우 시간에 12를 더함
+    if (period === 'PM' && hours !== 12) {
+        hours += 12;
+    }
+    // AM이고, 시간이 12시인 경우 0시로 변경
+    else if (period === 'AM' && hours === 12) {
+        hours = 0;
+    }
+
+    // 결과를 24시간 형식으로 반환
+    return `${hours}:${minutes}`;
 }
 
 document.getElementById('workHoursTable').addEventListener('change', (event) => {
