@@ -12,8 +12,8 @@ const chartColor44 = '#F79999'; // 남은 시간 색상
 
 let remainingMinutes;
 
-const lunchStartMoment = moment('12:31', "HH:mm");
-const lunchEndMoment = moment('13:29', "HH:mm");
+const lunchStartMoment = moment('12:31 PM', "hh:mm A");
+const lunchEndMoment = moment('1:29 PM', "hh:mm A");
 
 window.onload = function () {
     makeTable();
