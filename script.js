@@ -25,7 +25,6 @@ window.onload = function () {
             ['09:30 PM', '11:59 PM']
         ]
     });
-    updateWorkHours();
 
     $('#timeStep').change(function() {
         var newStep = $(this).val();
@@ -42,6 +41,7 @@ window.onload = function () {
         updateWorkHours();
         saveTimeToLocalStorage();
     });
+    updateWorkHours();
 };
 
 // make chart
