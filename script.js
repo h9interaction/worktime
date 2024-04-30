@@ -12,6 +12,9 @@ const chartColor44 = '#F79999'; // 남은 시간 색상
 
 let remainingMinutes;
 
+const lunchStartMoment = moment('12:31', "HH:mm");
+const lunchEndMoment = moment('13:29', "HH:mm");
+
 window.onload = function () {
     makeTable();
 
@@ -229,7 +232,7 @@ function calcTotalRequiredMinutesAndUpdateTable() {
 
         const startTime = convertTo24HourFormat(rows[i].cells[1].children[0].value);
         const endTime = convertTo24HourFormat(rows[i].cells[2].children[0].value);
-        console.log("endTime : "+endTime);
+        // console.log("endTime : "+endTime);
         const vacationTime = rows[i].cells[3].children[0].value;
         let vacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
         totalVacationMinutes += vacationMinutes;
@@ -309,7 +312,7 @@ function calculateWorkDuration(startTime, endTime) {
     if (startMoment.isValid() && endMoment.isValid()) {
         duration = moment.duration(endMoment.diff(startMoment)).asMinutes();
         // 점심 시간 체크
-        if (!endMoment.isBefore(moment('12:31', "HH:mm")) && !startMoment.isAfter(moment('13:29', "HH:mm"))) {
+        if (!endMoment.isBefore(lunchStartMoment) && !startMoment.isAfter(lunchEndMoment)) {
             duration -= 60;
         }
     }
@@ -435,8 +438,6 @@ function calculatedayExitTime() {
     // let remainingTotalMinutes = remainingMinutes;// (remainingHours * 60) + remainingMinutes;
 
     const targetdayStartMoment = moment(startTime, "HH:mm");
-    const lunchStart = moment('12:31', "HH:mm");
-    const lunchEnd = moment('13:29', "HH:mm");
     const { totalAddedMinutes, addedTimesArray } = calcTotalRequiredMinutesAndUpdateTable();
 
     // 오전 반반차, 오전 반차, 오후 반차, 오후 반반차 인지 확인할 필요가 있을까?
@@ -452,8 +453,8 @@ function calculatedayExitTime() {
     let dayExitMoment = targetdayStartMoment.clone().add(dayWorkTime, 'minutes');
     // 퇴근시간이 점심 시작시간 이후라면 1시간 휴게시간 포함
     let lunchTimeMessage = '점심시간 이전';
-    if (dayExitMoment.isAfter(lunchStart)) {
-        if (targetdayStartMoment.isBefore(lunchStart))
+    if (dayExitMoment.isAfter(lunchStartMoment)) {
+        if (targetdayStartMoment.isBefore(lunchStartMoment))
             dayExitMoment.add(60, 'minutes');
         lunchTimeMessage = '점심 휴게시간 이후';
     }
@@ -462,8 +463,8 @@ function calculatedayExitTime() {
     let dayAddedExitMoment = targetdayStartMoment.clone().add(dayWorkTime - targetDayRemoveAddedTime, 'minutes');
     // 퇴근시간이 점심 시작시간 이후라면 1시간 휴게시간 포함
     let lunchTimeMessageAdded = '점심시간 이전';
-    if (dayAddedExitMoment.isAfter(lunchStart)) {
-        if (targetdayStartMoment.isBefore(lunchStart))
+    if (dayAddedExitMoment.isAfter(lunchStartMoment)) {
+        if (targetdayStartMoment.isBefore(lunchStartMoment))
             dayAddedExitMoment.add(60, 'minutes');
         lunchTimeMessageAdded = '점심 휴게시간 이후';
     }
@@ -511,6 +512,14 @@ function calculatedayExitTime() {
 }
 
 function convertTo24HourFormat(time) {
+    // 시간 형식 선택 요소의 현재 값 확인
+    const timeFormat = document.getElementById('timeFormat').value;
+
+    // 24시간 형식이 선택되었을 때는 입력 값을 그대로 반환
+    if (timeFormat === '24') {
+        return time;
+    }
+
     // 입력된 시간에서 숫자와 AM/PM을 추출
     const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
     if (!match) {
