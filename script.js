@@ -38,6 +38,10 @@ window.onload = function () {
         saveSettings();
     });
     applySettings();
+    $(document).on('changeTime.timepicker', '.timepicker-input', function() {
+        updateWorkHours();
+        saveTimeToLocalStorage();
+    });
 };
 
 // make chart
