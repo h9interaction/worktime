@@ -40,7 +40,7 @@ window.onload = function () {
         saveSettings();
     });
     applySettings();
-    $(document).on('changeTime.timepicker', '.timepicker-input', function() {
+    $(document).on('input', '.timepicker-input', function() {
         updateWorkHours();
         saveTimeToLocalStorage();
     });
@@ -171,6 +171,7 @@ function updateWorkHours() {
     const { totalHolidayTime, totalAccumulatedMinutes, totalVacationMinutes } = calcTotalRequiredMinutesAndUpdateTable();
     updateChart(totalAccumulatedMinutes - totalVacationMinutes, remainingMinutes, totalHolidayTime, totalVacationMinutes);
 }
+
 // update chart
 function updateChart(completedTime, remainingTime, holidayTime, vacationTime) {
     workTimeChart.data.datasets[0].data[0] = holidayTime;
@@ -473,42 +474,6 @@ function calculatedayExitTime() {
     document.getElementById('dayExitTime').innerHTML = `<span class="dayExitTimeNormal">${targetDayOfWeek} 정시 퇴근은 ${lunchTimeMessage} <b>${dayExitMoment.format("hh:mm A")}</b></span><span class="dayExitTimeNormal"></span><br />
         <span class="dayExitTimeNormal"}>전날 까지의 적립시간 계산 시 ${lunchTimeMessageAdded}</span> <span class="${totalAddedMinutes >= 0 ? "" : "dayExitTimeAlert"}"><b>${dayAddedExitMoment.format("hh:mm A")}</b> <span class="dayExitTimeNormal">입니다.</span>
         ${totalAddedMinutes < 0 ? "<br /> <span class='dayExitTimeAlert'>남은 근무일 수로 잔여 근무시간을 채우 수 있을지 확인이 필요합니다!" : ""}`;
-    //! 계산 된 퇴근시간이 근무인정 시간 최대 9시간안으로 들어오는지 벗어나는지 확인 필요!!
-
-    // // 출근 시간과 남은 근무 시간을 기준으로 초기 퇴근 시간을 계산
-    // let tentativeTargetdayExitMoment = targetdayStartMoment.clone().add(remainingTotalMinutes, 'minutes');
-    // let isLaunchTime = false;
-    // // 점심시간이 근무 시간에 포함되어 있는지 확인 후 조정
-    // if (targetdayStartMoment.isBefore(lunchEnd) && tentativeTargetdayExitMoment.isAfter(lunchStart)) {
-    //     // 점심시간이 포함되어 있으면, 퇴근 시간을 60분 연장
-    //     remainingTotalMinutes += 60;
-    //     isLaunchTime = true;
-    // }
-    // // 금요일이 아닌경우 휴가가 포함되어있으면 휴가시간 제외
-    // if (targetDayOfWeek !== "금요일") {
-    //     const vacationTime = targetRow.cells[3].children[0].value;
-    //     let vacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
-    //     remainingTotalMinutes -= vacationMinutes;
-    // }
-    // let checkVacationMinutes = vacationTime === '없음' ? 0 : parseInt(vacationTime) * 60;
-    // let checkRemainingTotalMinutes = remainingTotalMinutes + checkVacationMinutes;
-    // if (checkRemainingTotalMinutes / 60 > 10) {
-    //     let overWorkTime = checkRemainingTotalMinutes - 540 - 60;
-    //     let overWorkTimeFormatted = formatMinutesAsHours(overWorkTime);
-    //     const targetdayOverExitMoment = targetdayStartMoment.clone().add(remainingTotalMinutes - overWorkTime, 'minutes');
-    //     const exitOverTimeFormatted = targetdayOverExitMoment.format("hh:mm A");
-    //     document.getElementById('dayExitTime').innerHTML = `<span class="dayExitTimeNormal">${targetDayOfWeek} 근무시간을 최대한 채울 수 있는 시간(9시간)인 </span>${exitOverTimeFormatted}<span class="dayExitTimeNormal">에 퇴근하면</span><br /> 
-    //     <span class="dayExitTimeNormal">남은 총 근무시간은</span> <span class="dayExitTimeAlert">${overWorkTimeFormatted}</span> <span class="dayExitTimeNormal">입니다.</span><br /><span class="dayExitTimeNormal">정시 퇴근은 ${'test'}입니다.</span>`;
-    // } else {
-    //     // 조정된 근무 시간으로 최종 퇴근 시간 계산
-    //     const targetdayExitMoment = targetdayStartMoment.clone().add(remainingTotalMinutes, 'minutes');
-    //     // 퇴근 시간을 AM/PM 포맷으로 출력
-    //     const exitTimeFormatted = targetdayExitMoment.format("hh:mm A");
-    //     let remainingTimeFormatted = formatMinutesAsHours(remainingTotalMinutes);
-    //     document.getElementById('dayExitTime').innerHTML
-    //         = `<span class="dayExitTimeNormal">남은 근무시간은 ${isLaunchTime ? "휴게시간 포함</span>" : "</span>"} ${remainingTimeFormatted} <br />
-    //             <span class="dayExitTimeNormal">${targetDayOfWeek} 퇴근은</span> ${exitTimeFormatted} <span class="dayExitTimeNormal">이후부터 가능해요.</span>`;
-    // }
 }
 
 function convertTo24HourFormat(time) {
