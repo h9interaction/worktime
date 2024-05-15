@@ -408,7 +408,8 @@ function calculatedayExitTime() {
     for (let i = 1; i < rows.length; i++) {
         if (
             rows[i].cells[2].children[0].value === '' &&
-            rows[i].cells[4].children[0].children[0].checked === false) {
+            rows[i].cells[4].children[0].children[0].checked === false &&
+            rows[i].cells[3].children[0].value !== '8시간') {
             targetRow = rows[i];
             targetIndex = i;
             if (i === 1) {
